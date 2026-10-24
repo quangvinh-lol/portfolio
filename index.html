@@ -39,6 +39,90 @@
     a { color: inherit; text-underline-offset: 3px; }
     a:focus-visible { outline: 2px solid #fff; outline-offset: 5px; }
     .zoom-controls { display: none; }
+    .toc-anchor { position: absolute; left: 0; width: 1px; height: 1px; pointer-events: none; }
+    .toc-panel[hidden], .toc-toggle[hidden] { display: none; }
+    .toc-panel {
+      position: fixed;
+      z-index: 9;
+      top: 24px;
+      left: var(--toc-left, 16px);
+      width: var(--toc-width, 220px);
+      max-height: calc(100dvh - 48px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid #252525;
+      border-radius: 16px;
+      background: #0b0b0b;
+      color: #f5f5f5;
+    }
+    .toc-heading { padding: 18px 16px 14px; border-bottom: 1px solid #252525; }
+    .toc-heading h2 { margin: 0; font-size: 16px; line-height: 1.4; }
+    .toc-heading p { margin: 5px 0 0; color: #999; font-size: 12px; line-height: 1.5; }
+    .toc-body { min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+    .toc-nav { padding: 8px; }
+    .toc-nav h3 { margin: 17px 10px 7px; color: #999; font-size: 10px; line-height: 1.5; letter-spacing: .12em; text-transform: uppercase; }
+    .toc-nav ul { margin: 0; padding: 0; list-style: none; }
+    .toc-nav a {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 40px;
+      padding: 9px 10px;
+      border-radius: 8px;
+      color: #c7c7c7;
+      font-size: 12px;
+      line-height: 1.45;
+      text-decoration: none;
+      overflow-wrap: anywhere;
+    }
+    .toc-nav a::before { content: ''; flex: 0 0 4px; height: 4px; border-radius: 50%; background: #555; }
+    .toc-nav a:hover { background: #191919; color: #fff; }
+    .toc-nav a[aria-current="location"] { background: #172236; color: #b9d3ff; }
+    .toc-nav a[aria-current="location"]::before { background: #8ab4ff; }
+    .toc-nav a:focus-visible { outline: 2px solid #8ab4ff; outline-offset: -2px; }
+    .toc-toggle {
+      position: fixed;
+      z-index: 11;
+      right: 16px;
+      bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 10px 14px;
+      border: 1px solid #454545;
+      border-radius: 999px;
+      background: #141414;
+      color: #fff;
+      box-shadow: 0 4px 18px #0006;
+      font: 600 13px Arial, sans-serif;
+      cursor: pointer;
+    }
+    .toc-toggle svg { width: 17px; height: 17px; }
+    .toc-toggle:focus-visible, .toc-close:focus-visible { outline: 2px solid #8ab4ff; outline-offset: 3px; }
+    .toc-dialog {
+      position: fixed;
+      inset: auto 12px calc(12px + env(safe-area-inset-bottom, 0px));
+      width: min(420px, calc(100% - 24px));
+      max-height: min(75dvh, 700px);
+      margin: 0 auto;
+      padding: 0;
+      border: 1px solid #3c3c3c;
+      border-radius: 20px;
+      background: #0f0f0f;
+      color: #fff;
+      box-shadow: 0 12px 60px #0008;
+    }
+    .toc-dialog[open] { display: flex; flex-direction: column; }
+    .toc-dialog::backdrop { background: #0009; }
+    .toc-dialog .toc-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .toc-dialog .toc-nav a { min-height: 46px; font-size: 14px; }
+    .toc-close { min-width: 44px; min-height: 44px; border: 1px solid #444; border-radius: 50%; background: #222; color: #fff; font-size: 24px; cursor: pointer; }
+    @media (min-width: 1200px) and (orientation: landscape) {
+      .toc-toggle { right: auto; left: 16px; bottom: 20px; }
+      .toc-dialog { left: 16px; right: auto; bottom: 80px; margin: 0; }
+    }
     @media (min-width: 1200px) and (orientation: landscape) {
       main {
         width: var(--portfolio-width, 1120px);
@@ -103,6 +187,24 @@
       by Vinh Nguyễn Quang
     </footer>
   </main>
+  <aside id="toc-panel" class="toc-panel" aria-labelledby="toc-title" hidden>
+    <header class="toc-heading">
+      <h2 id="toc-title">Mục lục</h2>
+      <p>Nguyễn Quang Vinh</p>
+    </header>
+    <div class="toc-body"><nav id="toc-sidebar-nav" class="toc-nav" aria-label="Các phần trong portfolio"></nav></div>
+  </aside>
+  <button id="toc-toggle" class="toc-toggle" type="button" aria-haspopup="dialog" aria-controls="toc-dialog" aria-expanded="false" hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12M3 6h.01M3 12h.01M3 18h.01"/></svg>
+    Mục lục
+  </button>
+  <dialog id="toc-dialog" class="toc-dialog" aria-labelledby="toc-dialog-title">
+    <header class="toc-heading">
+      <div><h2 id="toc-dialog-title">Đi tới một phần</h2><p>Chọn dự án bạn muốn xem</p></div>
+      <button id="toc-close" class="toc-close" type="button" aria-label="Đóng mục lục">×</button>
+    </header>
+    <div class="toc-body"><nav id="toc-dialog-nav" class="toc-nav" aria-label="Các phần trong portfolio"></nav></div>
+  </dialog>
   <div class="zoom-controls" role="group" aria-label="Điều chỉnh kích thước portfolio" hidden>
     <button id="zoom-out" type="button" aria-label="Thu nhỏ portfolio" title="Thu nhỏ">−</button>
     <output id="zoom-level" aria-live="polite" aria-label="Chiều rộng so với vùng xem"></output>
@@ -178,6 +280,170 @@
         pendingResize = window.requestAnimationFrame(syncLayout);
       });
       syncLayout();
+    })();
+  </script>
+  <script>
+    (() => {
+      // Offsets measured from the current Canva design, as fractions of its full height.
+      // Re-measure these if Canva sections are added, removed, or reordered.
+      const sections = [
+        { id: 'trang-dau', label: 'Trang đầu', group: 'Giới thiệu', at: 0 },
+        { id: 'gioi-thieu', label: 'Giới thiệu & kinh nghiệm', group: 'Giới thiệu', at: .0165658241 },
+        { id: 'hoc-van', label: 'Học vấn', group: 'Giới thiệu', at: .0522213534 },
+        { id: 'cach-lam-viec', label: 'Cách làm việc', group: 'Giới thiệu', at: .0708146989 },
+        { id: 'doppelherz-bayern', label: 'Doppelherz × FC Bayern', group: 'Dự án', at: .0888473018 },
+        { id: 'doppelherz-digital', label: 'Doppelherz · Digital & SEO', group: 'Dự án', at: .3006889328 },
+        { id: 'boo-thu-hood', label: 'BOO · Thu Hood Đông Vui', group: 'Dự án', at: .3984451713 },
+        { id: 'tat-den-bat-y-tuong', label: 'Tắt Đèn Bật Ý Tưởng 2024', group: 'Dự án', at: .4870338625 },
+        { id: 'take-one', label: 'Take One 2024', group: 'Dự án', at: .5762052368 },
+        { id: 'neu-concert', label: 'NEU Concert 2023', group: 'Dự án', at: .6840346991 },
+        { id: 'youth-neu-media', label: 'Youth NEU Media', group: 'Dự án', at: .7379602207 },
+        { id: 'venus', label: 'VENUS 2024', group: 'Dự án', at: .8353499444 },
+        { id: 'aloha', label: 'Aloha Media', group: 'Dự án', at: .9079554945 },
+        { id: 'feedback', label: 'Feedback & recommendations', group: 'Kết nối', at: .9378625134 },
+        { id: 'business-deck', label: 'Business deck', group: 'Kết nối', at: .9581127290 },
+        { id: 'lien-he', label: 'Thông tin liên hệ', group: 'Kết nối', at: .0382687460 },
+        { id: 'cam-on', label: 'Lời kết', group: 'Kết nối', at: .9902834897 },
+      ];
+      const main = document.querySelector('main');
+      const embed = document.querySelector('.canva-embed');
+      const panel = document.getElementById('toc-panel');
+      const toggle = document.getElementById('toc-toggle');
+      const dialog = document.getElementById('toc-dialog');
+      const close = document.getElementById('toc-close');
+      const desktop = window.matchMedia('(min-width: 1200px) and (orientation: landscape)');
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const ordered = [...sections].sort((a, b) => a.at - b.at);
+      const links = new Map(sections.map(section => [section.id, []]));
+      const anchors = new Map();
+      let active = '';
+      let scrollFrame = 0;
+      let savedOverflow = '';
+
+      for (const section of sections) {
+        const anchor = document.createElement('span');
+        anchor.id = section.id;
+        anchor.className = 'toc-anchor';
+        anchor.setAttribute('aria-hidden', 'true');
+        anchor.style.top = section.at * 100 + '%';
+        embed.appendChild(anchor);
+        anchors.set(section.id, anchor);
+      }
+
+      function navigateTo(section, updateHistory = true, smooth = true) {
+        if (dialog.open) dialog.close();
+        const target = anchors.get(section.id);
+        const top = target.getBoundingClientRect().top + window.scrollY;
+        if (updateHistory && window.location.hash !== '#' + section.id) {
+          window.history.pushState(null, '', '#' + section.id);
+        }
+        window.scrollTo({ top: Math.max(0, top - 16), behavior: smooth && !reducedMotion.matches ? 'smooth' : 'instant' });
+      }
+
+      function fillNavigation(nav) {
+        for (const group of [...new Set(sections.map(section => section.group))]) {
+          const heading = document.createElement('h3');
+          heading.textContent = group;
+          nav.appendChild(heading);
+          const list = document.createElement('ul');
+          for (const section of sections.filter(section => section.group === group)) {
+            const item = document.createElement('li');
+            const link = document.createElement('a');
+            link.href = '#' + section.id;
+            link.textContent = section.label;
+            link.addEventListener('click', event => {
+              if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+              event.preventDefault();
+              navigateTo(section);
+            });
+            links.get(section.id).push(link);
+            item.appendChild(link);
+            list.appendChild(item);
+          }
+          nav.appendChild(list);
+        }
+      }
+
+      function updateActive() {
+        scrollFrame = 0;
+        const rect = embed.getBoundingClientRect();
+        const readingPoint = Math.max(24, Math.min(160, window.innerHeight * .18));
+        const progress = (readingPoint - rect.top) / Math.max(1, rect.height);
+        let current = ordered[0];
+        for (const section of ordered) {
+          if (section.at <= progress) current = section;
+          else break;
+        }
+        if (current.id === active) return;
+        active = current.id;
+        for (const [id, matches] of links) {
+          for (const link of matches) {
+            if (id === active) link.setAttribute('aria-current', 'location');
+            else link.removeAttribute('aria-current');
+          }
+        }
+        if (!panel.hidden) {
+          const link = links.get(active)[0];
+          const body = panel.querySelector('.toc-body');
+          const itemRect = link.getBoundingClientRect();
+          const bodyRect = body.getBoundingClientRect();
+          if (itemRect.top < bodyRect.top) body.scrollTop -= bodyRect.top - itemRect.top + 8;
+          else if (itemRect.bottom > bodyRect.bottom) body.scrollTop += itemRect.bottom - bodyRect.bottom + 8;
+        }
+      }
+
+      function scheduleActive() {
+        if (!scrollFrame) scrollFrame = window.requestAnimationFrame(updateActive);
+      }
+
+      function updateLayout() {
+        // Keep the modal stable while its scroll lock changes the browser's scrollbar.
+        if (dialog.open) return;
+        const gutter = main.getBoundingClientRect().left;
+        const hasSpace = desktop.matches && gutter >= 200;
+        panel.hidden = !hasSpace;
+        toggle.hidden = hasSpace;
+        if (hasSpace) {
+          const width = Math.min(240, gutter - 32);
+          panel.style.setProperty('--toc-width', width + 'px');
+          panel.style.setProperty('--toc-left', (gutter - width) / 2 + 'px');
+        }
+        scheduleActive();
+      }
+
+      fillNavigation(document.getElementById('toc-sidebar-nav'));
+      fillNavigation(document.getElementById('toc-dialog-nav'));
+      toggle.addEventListener('click', () => {
+        savedOverflow = document.body.style.overflow;
+        dialog.showModal();
+        document.body.style.overflow = 'hidden';
+        toggle.setAttribute('aria-expanded', 'true');
+        const link = links.get(active)?.[1];
+        if (link) {
+          link.focus({ preventScroll: true });
+          const body = dialog.querySelector('.toc-body');
+          body.scrollTop += link.getBoundingClientRect().top - body.getBoundingClientRect().top - 12;
+        }
+      });
+      close.addEventListener('click', () => dialog.close());
+      dialog.addEventListener('click', event => {
+        if (event.target !== dialog) return;
+        const rect = dialog.getBoundingClientRect();
+        if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
+      });
+      dialog.addEventListener('close', () => {
+        document.body.style.overflow = savedOverflow;
+        toggle.setAttribute('aria-expanded', 'false');
+        updateLayout();
+      });
+      window.addEventListener('scroll', scheduleActive, { passive: true });
+      window.addEventListener('resize', updateLayout);
+      new ResizeObserver(updateLayout).observe(main);
+      window.addEventListener('hashchange', scheduleActive);
+      updateLayout();
+      updateActive();
+      const initial = sections.find(section => '#' + section.id === window.location.hash);
+      if (initial) window.requestAnimationFrame(() => navigateTo(initial, false, false));
     })();
   </script>
 </body>
