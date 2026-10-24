@@ -331,7 +331,11 @@
       }
 
       function navigateTo(section, updateHistory = true, smooth = true) {
-        if (dialog.open) dialog.close();
+        if (dialog.open) {
+          // Restore the page width before measuring the destination.
+          document.body.style.overflow = savedOverflow;
+          dialog.close();
+        }
         const target = anchors.get(section.id);
         const top = target.getBoundingClientRect().top + window.scrollY;
         if (updateHistory && window.location.hash !== '#' + section.id) {
@@ -422,7 +426,10 @@
         if (link) {
           link.focus({ preventScroll: true });
           const body = dialog.querySelector('.toc-body');
-          body.scrollTop += link.getBoundingClientRect().top - body.getBoundingClientRect().top - 12;
+          const itemRect = link.getBoundingClientRect();
+          const bodyRect = body.getBoundingClientRect();
+          if (itemRect.top < bodyRect.top) body.scrollTop -= bodyRect.top - itemRect.top + 12;
+          else if (itemRect.bottom > bodyRect.bottom) body.scrollTop += itemRect.bottom - bodyRect.bottom + 12;
         }
       });
       close.addEventListener('click', () => dialog.close());
