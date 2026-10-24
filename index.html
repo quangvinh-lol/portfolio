@@ -40,6 +40,42 @@
     a:focus-visible { outline: 2px solid #fff; outline-offset: 5px; }
     .zoom-controls { display: none; }
     .toc-anchor { position: absolute; left: 0; width: 1px; height: 1px; pointer-events: none; }
+    .managed-video { position: absolute; z-index: 1; overflow: hidden; background: #000; container-type: inline-size; }
+    .managed-video[hidden] { display: none; }
+    .managed-video video { display: block; width: 100%; height: 100%; object-fit: fill; }
+    .video-audio {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px;
+      border-radius: 999px;
+      background: #111d;
+      color: #fff;
+    }
+    .video-audio button {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      padding: 6px;
+      border: 0;
+      border-radius: 50%;
+      color: inherit;
+      background: transparent;
+      cursor: pointer;
+    }
+    .video-audio svg { display: block; width: 19px; height: 19px; }
+    .video-audio input { display: none; width: 76px; margin: 0 8px 0 0; accent-color: #9cc2ff; cursor: pointer; }
+    .video-audio:hover input, .video-audio:focus-within input { display: block; }
+    .video-audio button:focus-visible, .video-audio input:focus-visible { outline: 2px solid #9cc2ff; outline-offset: 2px; }
+    @container (max-width: 160px) {
+      .video-audio { top: 3px; right: 3px; padding: 2px; }
+      .video-audio button { width: 26px; height: 26px; padding: 4px; }
+      .video-audio input { display: none !important; }
+    }
     .toc-panel[hidden], .toc-toggle[hidden] { display: none; }
     .toc-panel {
       position: fixed;
@@ -451,6 +487,143 @@
       updateActive();
       const initial = sections.find(section => '#' + section.id === window.location.hash);
       if (initial) window.requestAnimationFrame(() => navigateTo(initial, false, false));
+    })();
+  </script>
+  <script type="application/json" id="portfolio-videos">[{"id":"neu-concert-video","title":"NEU Concert 2023","file":"neu-concert-video.mp4","poster":"neu-concert-video.jpg","left":53.49854946136474,"top":73.05399134319963,"width":21.85302734375,"height":0.6439007827376177,"radius":0,"decorative":false,"audio":true},{"id":"boo-divider","title":"BOO · Tiêu đề chuyển động","file":"boo-divider.mp4","poster":"boo-divider.jpg","left":0.0,"top":39.73236862114881,"width":100.0,"height":0.11214851081308749,"radius":0,"decorative":true,"audio":false},{"id":"tat-den-divider","title":"Tắt Đèn Bật Ý Tưởng · Tiêu đề chuyển động","file":"tat-den-divider.mp4","poster":"tat-den-divider.jpg","left":0.0,"top":48.703386251988135,"width":100.0,"height":0.09272574114051942,"radius":0,"decorative":true,"audio":false},{"id":"venus-divider","title":"VENUS · Tiêu đề chuyển động","file":"venus-divider.mp4","poster":"venus-divider.jpg","left":0.0,"top":83.41421358284639,"width":99.99934196472168,"height":0.12078085288978442,"radius":0,"decorative":true,"audio":false},{"id":"boo-thu-hood","title":"BOO · Thu Hood Đông Vui","file":"boo-thu-hood.mp4","poster":"boo-thu-hood.jpg","left":0.0,"top":42.623259054427635,"width":99.99893993139267,"height":1.5982061993164622,"radius":0,"decorative":false,"audio":true},{"id":"doppelherz-social-1","title":"Doppelherz · Social media 1","file":"doppelherz-social-1.mp4","poster":"doppelherz-social-1.jpg","left":6.5749359130859375,"top":38.703888006871345,"width":16.966552734375,"height":0.9417165843836615,"radius":6.9,"decorative":false,"audio":true},{"id":"doppelherz-social-2","title":"Doppelherz · Social media 2","file":"doppelherz-social-2.mp4","poster":"doppelherz-social-2.jpg","left":26.009790897369385,"top":38.699769660338916,"width":17.13012456893921,"height":0.9417165843836615,"radius":6.9,"decorative":false,"audio":true},{"id":"doppelherz-social-3","title":"Doppelherz · Social media 3","file":"doppelherz-social-3.mp4","poster":"doppelherz-social-3.jpg","left":45.52494525909424,"top":38.699769660338916,"width":17.07275390625,"height":0.9458529149620788,"radius":6.9,"decorative":false,"audio":true},{"id":"tat-den-vinfast","title":"Tắt Đèn Bật Ý Tưởng · VinFast","file":"tat-den-vinfast.mp4","poster":"tat-den-vinfast.jpg","left":0.0,"top":52.932577451890886,"width":99.99897971749306,"height":1.2794210000424422,"radius":0,"decorative":false,"audio":true},{"id":"youth-neu-logo","title":"Youth NEU Media · Logo","file":"youth-neu-logo.mp4","poster":"youth-neu-logo.jpg","left":0.0,"top":56.48810427293739,"width":100.0,"height":1.132419408094691,"radius":0,"decorative":false,"audio":true},{"id":"take-one-jason","title":"Take One 2024 · Jason Ng","file":"take-one-jason.mp4","poster":"take-one-jason.jpg","left":0.0,"top":61.84521886943655,"width":66.77978515625,"height":1.1192910545197146,"radius":0,"decorative":false,"audio":true},{"id":"take-one-ninh-tito","title":"Take One 2024 · Ninh Tito","file":"take-one-ninh-tito.mp4","poster":"take-one-ninh-tito.jpg","left":66.62519454956055,"top":62.42119391045815,"width":33.37480545043945,"height":0.5433339975440986,"radius":0,"decorative":false,"audio":true},{"id":"take-one-thung-long","title":"Take One 2024 · Thủng Long","file":"take-one-thung-long.mp4","poster":"take-one-thung-long.jpg","left":66.51611804962158,"top":61.84521886943655,"width":33.48388195037842,"height":0.5759570569756157,"radius":0,"decorative":false,"audio":true},{"id":"youth-neu-activities-1","title":"Youth NEU Media · Hoạt động 1","file":"youth-neu-activities-1.mp4","poster":"youth-neu-activities-1.jpg","left":33.19927215576172,"top":76.46452179342663,"width":66.80072784423828,"height":1.1111262976388387,"radius":0,"decorative":false,"audio":true},{"id":"youth-neu-activities-2","title":"Youth NEU Media · Hoạt động 2","file":"youth-neu-activities-2.mp4","poster":"youth-neu-activities-2.jpg","left":46.4512300491333,"top":78.51091739496057,"width":53.548769950866706,"height":0.8915051279708744,"radius":0,"decorative":false,"audio":true},{"id":"venus-your-eyes","title":"VENUS 2024 · Your Eyes","file":"venus-your-eyes.mp4","poster":"venus-your-eyes.jpg","left":0.04447493702173233,"top":88.95373136583075,"width":50.543212890625,"height":0.8376968623594636,"radius":0,"decorative":false,"audio":true},{"id":"venus-lam-tho","title":"VENUS 2024 · Làm Thơ Tán Em","file":"venus-lam-tho.mp4","poster":"venus-lam-tho.jpg","left":50.58776855468749,"top":88.97017777589144,"width":49.41162109375,"height":0.8189574864346341,"radius":0,"decorative":false,"audio":true}]</script>
+  <script id="portfolio-video-player">
+    (() => {
+      const embed = document.querySelector('.canva-embed');
+      const items = JSON.parse(document.getElementById('portfolio-videos').textContent);
+      const states = [];
+      const speaker = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14"/></svg>';
+      const silent = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="m16 9 5 6m0-6-5 6"/></svg>';
+
+      function load(state) {
+        if (state.loaded || state.failed) return;
+        state.loaded = true;
+        state.video.src = 'media/' + state.item.file;
+        state.video.load();
+      }
+
+      function pauseAutomatically(state) {
+        if (!state.video.paused) {
+          state.automaticPause = true;
+          state.video.pause();
+        }
+      }
+
+      function playWhenVisible(state) {
+        if (!state.visible || state.userPaused || state.failed || document.hidden) return;
+        load(state);
+        // Muting is set before loading; play() may still be declined by a browser's power-saving policy.
+        const attempt = state.video.play();
+        if (attempt) attempt.catch(() => {});
+      }
+
+      const loader = new IntersectionObserver(entries => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            const state = states.find(candidate => candidate.box === entry.target);
+            load(state);
+            loader.unobserve(entry.target);
+          }
+        }
+      }, { rootMargin: '500px 0px' });
+      const playback = new IntersectionObserver(entries => {
+        for (const entry of entries) {
+          const state = states.find(candidate => candidate.box === entry.target);
+          state.visible = entry.isIntersecting && entry.intersectionRatio >= .15;
+          if (state.visible) playWhenVisible(state);
+          else pauseAutomatically(state);
+        }
+      }, { threshold: [0, .15, .5] });
+
+      for (const item of items) {
+        const box = document.createElement('div');
+        box.className = 'managed-video';
+        box.dataset.videoId = item.id;
+        box.style.left = item.left + '%';
+        box.style.top = item.top + '%';
+        box.style.width = item.width + '%';
+        box.style.height = item.height + '%';
+        if (item.radius) box.style.borderRadius = item.radius + '% / ' + item.radius * item.width / item.height / 33.938507 + '%';
+        const video = document.createElement('video');
+        video.defaultMuted = true;
+        video.muted = true;
+        video.volume = .65;
+        video.loop = true;
+        video.playsInline = true;
+        video.setAttribute('playsinline', '');
+        video.setAttribute('muted', '');
+        video.controls = !item.decorative;
+        video.preload = 'none';
+        video.poster = 'media/' + item.poster;
+        video.setAttribute('aria-label', item.title);
+        box.appendChild(video);
+        const state = { item, box, video, loaded: false, visible: false, userPaused: false, automaticPause: false, failed: false };
+        states.push(state);
+
+        if (!item.decorative && item.audio) {
+          const audio = document.createElement('div');
+          audio.className = 'video-audio';
+          const button = document.createElement('button');
+          button.type = 'button';
+          const slider = document.createElement('input');
+          slider.type = 'range';
+          slider.min = '0';
+          slider.max = '100';
+          slider.step = '5';
+          slider.value = '65';
+          slider.setAttribute('aria-label', 'Âm lượng – ' + item.title);
+          const updateAudio = () => {
+            const audible = !video.muted && video.volume > 0;
+            button.innerHTML = audible ? speaker : silent;
+            button.setAttribute('aria-label', (audible ? 'Tắt tiếng – ' : 'Bật tiếng – ') + item.title);
+            button.setAttribute('aria-pressed', String(audible));
+            button.title = audible ? 'Tắt tiếng' : 'Bật tiếng';
+            slider.value = String(Math.round(video.volume * 100));
+            slider.setAttribute('aria-valuetext', video.muted ? 'Đang tắt tiếng' : slider.value + '%');
+          };
+          button.addEventListener('click', () => {
+            if (video.muted || video.volume === 0) {
+              if (!video.volume) video.volume = .65;
+              video.muted = false;
+            } else video.muted = true;
+            updateAudio();
+            if (!state.userPaused) playWhenVisible(state);
+          });
+          slider.addEventListener('input', () => {
+            video.volume = Number(slider.value) / 100;
+            video.muted = video.volume === 0;
+            updateAudio();
+          });
+          video.addEventListener('volumechange', updateAudio);
+          updateAudio();
+          audio.append(button, slider);
+          box.appendChild(audio);
+        }
+
+        video.addEventListener('play', () => { state.userPaused = false; });
+        video.addEventListener('pause', () => {
+          if (state.automaticPause) state.automaticPause = false;
+          else if (state.visible && !document.hidden) state.userPaused = true;
+        });
+        video.addEventListener('error', () => {
+          state.failed = true;
+          box.hidden = true;
+          // Leave Canva's original video available when a standalone media file cannot load.
+        });
+        embed.appendChild(box);
+        loader.observe(box);
+        playback.observe(box);
+      }
+
+      document.addEventListener('visibilitychange', () => {
+        for (const state of states) {
+          if (document.hidden) pauseAutomatically(state);
+          else playWhenVisible(state);
+        }
+      });
     })();
   </script>
 </body>
