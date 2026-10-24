@@ -38,6 +38,51 @@
     }
     a { color: inherit; text-underline-offset: 3px; }
     a:focus-visible { outline: 2px solid #fff; outline-offset: 5px; }
+    .zoom-controls { display: none; }
+    @media (min-width: 1200px) and (orientation: landscape) {
+      main {
+        width: var(--portfolio-width, 1120px);
+        max-width: calc(100% - 48px);
+        margin-inline: auto;
+      }
+      footer { padding-bottom: 100px; }
+      .zoom-controls:not([hidden]) {
+        position: fixed;
+        z-index: 10;
+        left: 50%;
+        bottom: 20px;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px;
+        border: 1px solid #cedbf0;
+        border-radius: 16px;
+        background: #f5f9ff;
+        color: #09264f;
+        box-shadow: 0 6px 28px #00132e55;
+        font-size: 14px;
+      }
+      .zoom-controls button {
+        min-width: 40px;
+        min-height: 40px;
+        padding: 8px 12px;
+        border: 0;
+        border-radius: 9px;
+        background: #e3ecfa;
+        color: inherit;
+        font: inherit;
+        font-weight: 600;
+        white-space: nowrap;
+        cursor: pointer;
+      }
+      .zoom-controls button:hover:not(:disabled) { background: #cddffa; }
+      .zoom-controls button:focus-visible { outline: 3px solid #3479e8; outline-offset: 2px; }
+      .zoom-controls button:disabled { opacity: .4; cursor: default; }
+      .zoom-controls output { min-width: 48px; text-align: center; font-variant-numeric: tabular-nums; }
+      .zoom-controls #zoom-fit { background: #164eae; color: #fff; }
+      .zoom-controls #zoom-fit:hover:not(:disabled) { background: #103b85; }
+    }
   </style>
 </head>
 <body>
@@ -58,5 +103,82 @@
       by Vinh Nguyễn Quang
     </footer>
   </main>
+  <div class="zoom-controls" role="group" aria-label="Điều chỉnh kích thước portfolio" hidden>
+    <button id="zoom-out" type="button" aria-label="Thu nhỏ portfolio" title="Thu nhỏ">−</button>
+    <output id="zoom-level" aria-live="polite" aria-label="Chiều rộng so với vùng xem"></output>
+    <button id="zoom-in" type="button" aria-label="Phóng to portfolio" title="Phóng to">+</button>
+    <button id="zoom-reset" type="button" title="Trở về chiều rộng 1120 px">Vừa đọc</button>
+    <button id="zoom-fit" type="button" title="Mở rộng theo chiều ngang màn hình">Mở rộng</button>
+  </div>
+  <script>
+    (() => {
+      const desktop = window.matchMedia('(min-width: 1200px) and (orientation: landscape)');
+      const main = document.querySelector('main');
+      const embed = document.querySelector('.canva-embed');
+      const controls = document.querySelector('.zoom-controls');
+      const smaller = document.getElementById('zoom-out');
+      const larger = document.getElementById('zoom-in');
+      const reset = document.getElementById('zoom-reset');
+      const fit = document.getElementById('zoom-fit');
+      const level = document.getElementById('zoom-level');
+      let width = 1120;
+      let fullWidth = false;
+
+      const availableWidth = () => Math.max(1, document.documentElement.clientWidth - 48);
+
+      function setWidth(requested, keepPosition = true) {
+        const before = embed.getBoundingClientRect();
+        const atTop = window.scrollY < 2;
+        const anchor = window.innerHeight * .4;
+        const progress = Math.max(0, Math.min(1, (anchor - before.top) / Math.max(1, before.height)));
+        const maximum = availableWidth();
+        width = Math.round(Math.max(Math.min(720, maximum), Math.min(requested, maximum)));
+        main.style.setProperty('--portfolio-width', width + 'px');
+        level.textContent = Math.round(width / maximum * 100) + '%';
+        smaller.disabled = width <= Math.min(720, maximum);
+        larger.disabled = width >= maximum;
+        fit.disabled = width >= maximum;
+        reset.disabled = width === Math.min(1120, maximum);
+        if (keepPosition) {
+          const after = embed.getBoundingClientRect();
+          const top = window.scrollY + after.top;
+          window.scrollTo({ top: atTop ? 0 : Math.max(0, top + progress * after.height - anchor), behavior: 'instant' });
+        }
+      }
+
+      function syncLayout() {
+        controls.hidden = !desktop.matches;
+        if (desktop.matches) {
+          setWidth(fullWidth ? availableWidth() : width, false);
+        } else {
+          main.style.removeProperty('--portfolio-width');
+        }
+      }
+
+      smaller.addEventListener('click', () => {
+        fullWidth = false;
+        setWidth(width - availableWidth() * .1);
+      });
+      larger.addEventListener('click', () => {
+        setWidth(width + availableWidth() * .1);
+        fullWidth = width >= availableWidth();
+      });
+      reset.addEventListener('click', () => {
+        fullWidth = false;
+        setWidth(1120);
+      });
+      fit.addEventListener('click', () => {
+        fullWidth = true;
+        setWidth(availableWidth());
+      });
+      desktop.addEventListener('change', syncLayout);
+      let pendingResize = 0;
+      window.addEventListener('resize', () => {
+        window.cancelAnimationFrame(pendingResize);
+        pendingResize = window.requestAnimationFrame(syncLayout);
+      });
+      syncLayout();
+    })();
+  </script>
 </body>
 </html>
